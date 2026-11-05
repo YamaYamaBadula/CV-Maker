@@ -12,6 +12,8 @@ And my CV? Made with this app. Again, because I CAN.
 
 This is free. Use it, copy it, change it, share it, sell CVs made with it, whatever you like. No sign-up, no payment, no catch. (Officially it's under the [MIT License](LICENSE), which basically says the same thing.)
 
+But if you got a job using this little app, YOU MUST BUY ME COFFEE 😃
+
 ---
 
 ## How to run it on your computer
@@ -131,3 +133,7 @@ npx vite preview # serve the build locally
 The `dist/` folder can be hosted on any static host, such as Netlify or GitHub Pages. For GitHub Pages, set `base: '/CV-Maker/'` in `vite.config.js` first. Opening `dist/index.html` straight from your file explorer won't work properly. It needs to be served over http.
 
 </details>
+
+---
+
+Email: [chemnz@gmail.com](mailto:chemnz@gmail.com)
