@@ -7,13 +7,30 @@ export const safeFileName = (cv, ext) => {
 
 /** Page rules used when printing (the CV itself is rendered in #print-root). */
 export function printPageCss(d) {
-  const size = d.pageSize === 'Letter' ? 'letter' : 'A4';
+  const page = PAGE_SIZES[d.pageSize] || PAGE_SIZES.A4;
+  // Explicit portrait dimensions, so the print dialog can't guess landscape.
+  const size = `${page.w}mm ${page.h}mm`;
+  if (d.template === 'modern') {
+    // Full-bleed pages: the sidebar colour is painted on every page by a fixed element,
+    // and the main column repeats its top/bottom padding at each page break.
+    return `
+@media print {
+  @page { size: ${size}; margin: 0; }
+  .cv.cv-print.cv-modern { padding: 0; min-height: 0; background: transparent; }
+  .cv.cv-print.cv-modern::before {
+    content: ''; position: fixed; left: 0; top: 0; bottom: 0; width: 33%;
+    background: var(--accent-soft); z-index: 0;
+  }
+  .cv.cv-print.cv-modern .cv-aside,
+  .cv.cv-print.cv-modern .cv-main { position: relative; z-index: 1; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  .cv.cv-print.cv-modern .cv-aside { background: transparent; }
+}`;
+  }
   return `
 @media print {
   @page { size: ${size}; margin: ${d.margin}mm 0; }
   @page :first { margin-top: 0; }
   .cv.cv-print { padding-bottom: 0; }
-  .cv.cv-print.cv-modern { padding: 0; min-height: calc(var(--page-h) - ${d.margin}mm); }
 }`;
 }
 

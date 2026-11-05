@@ -32,6 +32,8 @@ export default function App() {
   const [openCards, setOpenCards] = useState({ personal: true });
   const [highlight, setHighlight] = useState(true);
   const [showImport, setShowImport] = useState(false);
+  const [printHelp, setPrintHelp] = useState(false);
+  const [skipPrintHelp, setSkipPrintHelp] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [docsOpen, setDocsOpen] = useState(false);
   const [toast, setToast] = useState(null);
@@ -177,7 +179,16 @@ export default function App() {
   const doExport = async (kind) => {
     setExportOpen(false);
     try {
-      if (kind === 'print') return printCv(cv);
+      if (kind === 'print') {
+        let skip = false;
+        try {
+          skip = localStorage.getItem('cvmaker.printHelpSeen') === '1';
+        } catch {
+          /* ignore */
+        }
+        if (skip) return printCv(cv);
+        return setPrintHelp(true);
+      }
       setBusy(kind);
       if (kind === 'pdf') {
         await downloadPdf(cv);
@@ -277,7 +288,7 @@ export default function App() {
             <div className="menu right">
               <button className="menu-item tall" onClick={() => doExport('print')}>
                 <Icon name="print" />
-                <div><b>PDF – print quality</b><small>Opens the print dialog: choose “Save as PDF”. Selectable text, best for job portals.</small></div>
+                <div><b>PDF – print quality</b><small>Opens the print window: set Destination to “Save as PDF”. Selectable text, best for job portals.</small></div>
               </button>
               <button className="menu-item tall" onClick={() => doExport('pdf')}>
                 <Icon name="download" />
@@ -331,6 +342,49 @@ export default function App() {
       </div>
 
       {showImport && <ImportDialog onClose={() => setShowImport(false)} onImport={onImport} onImportJson={(d) => onImportJson(normalizeCv(d))} />}
+      {printHelp && (
+        <div className="modal-back" onMouseDown={(e) => e.target === e.currentTarget && setPrintHelp(false)}>
+          <div className="modal print-help">
+            <div className="modal-head">
+              <h2>Save as PDF</h2>
+              <button className="icon-btn" onClick={() => setPrintHelp(false)}><Icon name="x" /></button>
+            </div>
+            <div className="modal-body">
+              <p>Your browser's print window opens next. Before you save:</p>
+              <ol>
+                <li>Set <b>Destination</b> to <b>Save as PDF</b>.<br />
+                  <span className="muted">Not “Microsoft Print to PDF” or a printer: those use Windows' own page settings, which can turn the CV sideways or shrink it.</span></li>
+                <li>Click <b>Save</b>.</li>
+              </ol>
+              <p className="muted small-text">No “Save as PDF” option? Click <b>See more</b> under Destination. Use Chrome or Edge for the best result.</p>
+              <label className="check small-text">
+                <input type="checkbox" checked={skipPrintHelp} onChange={(e) => setSkipPrintHelp(e.target.checked)} /> Don't show this again
+              </label>
+            </div>
+            <div className="modal-foot">
+              <div className="spacer" />
+              <button className="btn ghost" onClick={() => setPrintHelp(false)}>Cancel</button>
+              <button
+                className="btn primary"
+                onClick={() => {
+                  if (skipPrintHelp) {
+                    try {
+                      localStorage.setItem('cvmaker.printHelpSeen', '1');
+                    } catch {
+                      /* ignore */
+                    }
+                  }
+                  setPrintHelp(false);
+                  // Let the dialog unmount before the print window freezes the page.
+                  setTimeout(() => printCv(cv), 60);
+                }}
+              >
+                <Icon name="print" size={15} /> Open print window
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {toast && <div className={`toast ${toast.kind}`} key={toast.n}>{toast.msg}</div>}
 
       {printRoot &&

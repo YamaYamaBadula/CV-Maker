@@ -81,6 +81,7 @@ Click in the terminal window and press **Ctrl + C** (on Mac too), or just close 
 | `'npm' is not recognized` or `command not found: npm` | Node.js isn't installed, or your computer hasn't noticed yet. Restart your computer. If that doesn't fix it, redo Step 1. |
 | The terminal shows a different address, like `localhost:5174` | Something else is using the usual one. Open whatever address the terminal shows. |
 | The browser says "This site can't be reached" | The app isn't running. Check the terminal is still open and `npm run dev` is running in it. |
+| The PDF comes out sideways (landscape), shrunk, or with "localhost" printed at the top | In the print window, set **Destination** to **Save as PDF**. "Microsoft Print to PDF" and real printers use Windows' own page settings and ignore the CV's layout. |
 | `npm install` shows red errors | Make sure the terminal is open *inside* the project folder (you should see `package.json` in that folder), then try again. |
 
 ---
@@ -94,7 +95,7 @@ Click in the terminal window and press **Ctrl + C** (on Mac too), or just close 
 - **Skill levels:** optionally rate skills from 1 to 5, shown as dots.
 - **Bullet points and formatting:** start a line with `-` for a bullet, and use `**bold**` or `*italic*`.
 - **Download your CV** as:
-  - **PDF (print quality):** opens your browser's print window. Choose **Save as PDF**. The text stays real text, so job sites and recruiter software can read it. **Use this one for applications.**
+  - **PDF (print quality):** opens your browser's print window. Set **Destination** to **Save as PDF** (not "Microsoft Print to PDF"). The text stays real text, so job sites and recruiter software can read it. **Use this one for applications.**
   - **PDF (quick download):** one click, but the text is turned into an image, so job sites can't read it.
   - **Word (.docx):** to keep editing in Microsoft Word or Google Docs.
   - **Backup file (.json):** to save your work or move it to another computer. Import it back into the app later.
